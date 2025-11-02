@@ -171,17 +171,22 @@ function calc(){
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
 
-// Smooth scroll to timeline after calculation
+// Smooth scroll to put Crew Rest at the very top of the screen
 setTimeout(() => {
-  const firstLine = out.querySelector('.line');
-  if (firstLine) {
-    const rect = firstLine.getBoundingClientRect();
-    window.scrollBy({
-      top: rect.top - 20, // adjust offset if needed
-      behavior: 'smooth'
-    });
-  }
-}, 200);
+  const firstLine = out.querySelector('.line'); // Crew Rest is the first .line we render
+  if (!firstLine) return;
+
+  const scroller = document.scrollingElement || document.documentElement; // robust on mobile/PWA
+  const headerOffset = 8; // tweak if you want a little breathing room from the top
+
+  const targetY =
+    firstLine.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+
+  scroller.scrollTo({
+    top: targetY,
+    behavior: 'smooth'
+  });
+}, 0);
 
 }
 
