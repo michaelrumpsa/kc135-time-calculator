@@ -182,42 +182,6 @@ function calc(){
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
 
-// Smooth scroll: center "Sortie Dur" (iOS-safe)
-setTimeout(() => {
-  // 1) Kill keyboard/field auto-scroll on iOS
-  if (document.activeElement && document.activeElement.blur) {
-    document.activeElement.blur();
-  }
-
-  // 2) Find Sortie Dur line
-  const sortieLine = [...out.querySelectorAll('.line')]
-    .find(l => l.textContent.includes('Sortie Dur'));
-  if (!sortieLine) return;
-
-  // 3) Wait for layout to settle on iOS (double rAF)
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const rect = sortieLine.getBoundingClientRect();
-      const pageY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-
-      // exact center (use 0.4*innerHeight if you want slightly above center)
-      const targetY = rect.top + pageY - (window.innerHeight / 2) + (rect.height / 2);
-
-      const scroller =
-        document.scrollingElement ||
-        document.documentElement ||
-        document.body;
-
-      // 4) Try smooth; if iOS ignores, it still snaps
-      if (scroller.scrollTo) {
-        scroller.scrollTo({ top: targetY, behavior: 'smooth' });
-      } else {
-        window.scrollTo(0, targetY);
-      }
-    });
-  });
-}, 300);
-
 }
 
 function resetAll(){
