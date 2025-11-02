@@ -193,18 +193,21 @@ setTimeout(() => {
   crew.style.scrollMarginTop = `${headerH}px`;
   crew.scrollIntoView({ block: 'start', behavior: 'smooth' });
 
-  // Safety fallback for some mobile browsers: compute and clamp exact target
-  setTimeout(() => {
-    const scroller = document.scrollingElement || document.documentElement;
-    const targetY = crew.getBoundingClientRect().top + scroller.scrollTop - headerH;
-    const maxY = scroller.scrollHeight - window.innerHeight;
-    const clamped = Math.max(0, Math.min(targetY, maxY));
-    // Only adjust if we're not already close to the intended spot
-    if (Math.abs(scroller.scrollTop - clamped) > 2) {
-      scroller.scrollTo({ top: clamped, behavior: 'smooth' });
-    }
-  }, 150);
-}, 250);
+ // Smooth scroll to center "Sortie Dur" line for best timeline view
+setTimeout(() => {
+  const sortieLine = [...out.querySelectorAll('.line')]
+    .find(l => l.textContent.includes('Sortie Dur'));
+  if (!sortieLine) return;
+
+  const scroller = document.scrollingElement || document.documentElement;
+  const rect = sortieLine.getBoundingClientRect();
+  const offsetY = rect.top + window.pageYOffset - (window.innerHeight / 2) + (rect.height / 2);
+
+  scroller.scrollTo({
+    top: offsetY,
+    behavior: 'smooth'
+  });
+}, 300);
 
 }
 
