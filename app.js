@@ -175,7 +175,7 @@ function calc(){
 setTimeout(() => {
   const firstLine = document.querySelector('.line');
   if (firstLine) {
-    firstLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    firstLine.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }, 200);
 }
