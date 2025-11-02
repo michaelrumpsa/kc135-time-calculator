@@ -170,6 +170,14 @@ function calc(){
   line('FDP', fdpEnd, offDep, mode==='BASIC'?'show+16':'show+24');
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
+
+// Smooth scroll to timeline after calculation
+setTimeout(() => {
+  const firstLine = document.querySelector('.line');
+  if (firstLine) {
+    firstLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}, 200);
 }
 
 function resetAll(){
