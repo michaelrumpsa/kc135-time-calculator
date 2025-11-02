@@ -182,22 +182,21 @@ function calc(){
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
 
-// Smooth scroll so "Crew Rest" lands at the very top
+// Smooth scroll so "Crew Rest" lands at the very top (under the sticky header)
 setTimeout(() => {
   const crew = document.getElementById('crew-rest');
   if (!crew) return;
 
-  // header height (sticky bar) + small cushion
-  const header = document.querySelector('header');
-  const headerOffset = (header ? header.offsetHeight : 0) + 8;
+  // First, force the element to the top of the viewport
+  crew.scrollIntoView({ block: 'start', behavior: 'smooth' });
 
-  // compute absolute Y of the Crew Rest line (within page)
-  const containerTop = out.getBoundingClientRect().top + window.pageYOffset;
-  const targetY = containerTop + crew.offsetTop - headerOffset;
-
-  const scroller = document.scrollingElement || document.documentElement;
-  scroller.scrollTo({ top: targetY, behavior: 'smooth' });
-}, 300);
+  // Then nudge up by the header height so it's not hidden
+  const headerH = (document.querySelector('header')?.offsetHeight || 56) + 8; // cushion
+  // Use a short delay to let the first smooth scroll settle
+  setTimeout(() => {
+    window.scrollBy({ top: -headerH, left: 0, behavior: 'instant' });
+  }, 180);
+}, 200);
 
 }
 
