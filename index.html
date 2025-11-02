@@ -177,5 +177,37 @@
     }
   </script>
   <script src="app.js"></script>
+<script>
+  // GA-safe wrapper so we don’t throw if gtag hasn’t loaded yet
+  function gaEvent(name, params = {}) {
+    if (window.gtag) {
+      window.gtag('event', name, params);
+    } else {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: name, ...params });
+    }
+  }
+
+  // Track when user installs the PWA
+  window.addEventListener('appinstalled', () => {
+    gaEvent('pwa_installed', {
+      event_category: 'PWA',
+      event_label: 'Add to Home Screen'
+    });
+  });
+
+  // Track when user clicks the Calculate button
+  document.addEventListener('DOMContentLoaded', () => {
+    const calcBtn = document.getElementById('calc');
+    if (!calcBtn) return;
+
+    calcBtn.addEventListener('click', () => {
+      gaEvent('calculate_tapped', {
+        event_category: 'Interaction',
+        event_label: 'Calculate pressed'
+      });
+    });
+  });
+</script>
 </body>
 </html>
