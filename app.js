@@ -129,6 +129,7 @@ function calc(){
   const step = addMin(to, -Number(offStepEl.value||0));
   const eng = addMin(to, -Number(offEngEl.value||0));
   const alert = addMin(show, -60);
+  const crewRest = addMin(alert, -12*60);
   const lastBeer = addMin(to, -12*60);
   const lastAmbien = addMin(alert, -6*60);
 
@@ -144,6 +145,7 @@ function calc(){
   const minTurnTO = addMin(ld, 17*60);
   const lateTOCap = addMin(fdpEnd, -dur);
 
+  line('Crew Rest', crewRest, offDep, 'alert−12');
   line('Last Beer', lastBeer, offDep, 'T/O−12');
   line('Last Ambien', lastAmbien, offDep, 'alert−6');
   line('Alert', alert, offDep, 'show−1');
