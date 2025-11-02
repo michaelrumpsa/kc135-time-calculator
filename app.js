@@ -182,30 +182,39 @@ function calc(){
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
 
-// Smooth scroll so "Crew Rest" lands at the very top (under the sticky header)
+// Smooth scroll: center "Sortie Dur" (iOS-safe)
 setTimeout(() => {
-  const crew = document.getElementById('crew-rest');
-  if (!crew) return;
+  // 1) Kill keyboard/field auto-scroll on iOS
+  if (document.activeElement && document.activeElement.blur) {
+    document.activeElement.blur();
+  }
 
-  const headerH = (document.querySelector('header')?.offsetHeight || 56) + 8; // cushion
-
-  // Preferred: use scroll-margin-top and scrollIntoView
-  crew.style.scrollMarginTop = `${headerH}px`;
-  crew.scrollIntoView({ block: 'start', behavior: 'smooth' });
-
- // Smooth scroll to center "Sortie Dur" line for best timeline view
-setTimeout(() => {
+  // 2) Find Sortie Dur line
   const sortieLine = [...out.querySelectorAll('.line')]
     .find(l => l.textContent.includes('Sortie Dur'));
   if (!sortieLine) return;
 
-  const scroller = document.scrollingElement || document.documentElement;
-  const rect = sortieLine.getBoundingClientRect();
-  const offsetY = rect.top + window.pageYOffset - (window.innerHeight / 2) + (rect.height / 2);
+  // 3) Wait for layout to settle on iOS (double rAF)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const rect = sortieLine.getBoundingClientRect();
+      const pageY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
 
-  scroller.scrollTo({
-    top: offsetY,
-    behavior: 'smooth'
+      // exact center (use 0.4*innerHeight if you want slightly above center)
+      const targetY = rect.top + pageY - (window.innerHeight / 2) + (rect.height / 2);
+
+      const scroller =
+        document.scrollingElement ||
+        document.documentElement ||
+        document.body;
+
+      // 4) Try smooth; if iOS ignores, it still snaps
+      if (scroller.scrollTo) {
+        scroller.scrollTo({ top: targetY, behavior: 'smooth' });
+      } else {
+        window.scrollTo(0, targetY);
+      }
+    });
   });
 }, 300);
 
