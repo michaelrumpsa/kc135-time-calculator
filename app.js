@@ -171,22 +171,30 @@ function calc(){
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
 
-// Smooth scroll to put Crew Rest at the very top of the screen
+// Smooth scroll to place Crew Rest at the very top after calculation
 setTimeout(() => {
-  const firstLine = out.querySelector('.line'); // Crew Rest is the first .line we render
-  if (!firstLine) return;
+  // find specifically the Crew Rest line
+  const crewRestLine = [...out.querySelectorAll('.line')].find(l =>
+    l.textContent.includes('Crew Rest')
+  );
+  if (!crewRestLine) return;
 
-  const scroller = document.scrollingElement || document.documentElement; // robust on mobile/PWA
-  const headerOffset = 20; // tweak if you want a little breathing room from the top
+  // get the main scrollable document element (works on PWAs too)
+  const scroller = document.scrollingElement || document.documentElement;
+  const headerOffset = 8; // tweak if you want a little space above
 
+  // compute where to scroll
   const targetY =
-    firstLine.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+    crewRestLine.getBoundingClientRect().top + window.pageYOffset - headerOffset;
 
-  scroller.scrollTo({
-    top: targetY,
-    behavior: 'smooth'
+  // slight delay ensures full layout before smooth scroll
+  requestAnimationFrame(() => {
+    scroller.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    });
   });
-}, 0);
+}, 300);
 
 }
 
