@@ -277,29 +277,28 @@ if (copyBtn) copyBtn.disabled = true;
 })();
 
 if (copyBtn) {
-  copyBtn.addEventListener('click', async () => {
-    if (!lastCopyText) return;
+  ['click', 'touchend'].forEach(ev => {
+    copyBtn.addEventListener(ev, async () => {
+      if (!lastCopyText) return;
+      try {
+        await navigator.clipboard.writeText(lastCopyText);
+      } catch {
+        // fallback for desktop or older Safari
+        const ta = document.createElement('textarea');
+        ta.value = lastCopyText;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
 
-    try {
-      await navigator.clipboard.writeText(lastCopyText);
-      if (typeof gaEvent === 'function') gaEvent('copy_timeline', {event_category:'Interaction'});
+      // Feedback
       const old = copyBtn.textContent;
       copyBtn.textContent = 'Copied!';
-      setTimeout(()=> copyBtn.textContent = old, 1200);
-    } catch {
-      // Fallback for older iOS/Safari
-      const ta = document.createElement('textarea');
-      ta.value = lastCopyText;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      const old = copyBtn.textContent;
-      copyBtn.textContent = 'Copied!';
-      setTimeout(()=> copyBtn.textContent = old, 1200);
-    }
+      setTimeout(() => copyBtn.textContent = old, 1200);
+    }, { passive: true });
   });
 }
 
