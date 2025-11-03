@@ -198,6 +198,11 @@ function resetAll(){
   tzDepEl.value=String(off); tzArrEl.value=String(off);
   applyProfile('SINGLE'); applyMode('BASIC');
   out.innerHTML='';
+
+    // Smooth scroll back to the very top of the page
+  const scroller = document.scrollingElement || document.documentElement;
+  scroller.scrollTo({ top: 0, behavior: 'smooth' });
+
 }
 
 ;['click','touchend'].forEach(ev=>{
