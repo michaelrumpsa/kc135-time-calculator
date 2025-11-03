@@ -77,6 +77,42 @@
 }
 .section-bar .copy-btn:disabled{ opacity:.5; cursor:default; }
 
+    /* FDP Notice Pill */
+.notice {
+  display: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+/* Approaching FDP (yellow) */
+.notice.warn {
+  display: inline-block;
+  background: #3a2a00;
+  color: #fde68a;
+  border-color: #b45309;
+  box-shadow: 0 0 12px rgba(234,179,8,0.4);
+  animation: fdpPulse 1.5s ease-in-out infinite;
+}
+
+/* Exceeded FDP (red) */
+.notice.bad {
+  display: inline-block;
+  background: #3b0f0f;
+  color: #fecaca;
+  border-color: #7f1d1d;
+  box-shadow: 0 0 14px rgba(239,68,68,0.4);
+}
+
+@keyframes fdpPulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(234,179,8,0.3); transform: translateY(0); }
+  50% { box-shadow: 0 0 18px rgba(234,179,8,0.6); transform: translateY(-1px); }
+}
+
     /* === Calculate button states === */
 #calc {
   transition: background .2s ease, opacity .2s ease, box-shadow .2s ease;
@@ -243,8 +279,9 @@ input.ok {
       </div>
     </div>
 
-    <div class="section-bar">
+   <div class="section-bar">
   <div class="section-title">Timeline</div>
+  <span id="fdpNotice" class="notice" aria-live="polite"></span>  <!-- NEW -->
   <button id="copy" class="copy-btn" disabled>Copy</button>
 </div>
 
