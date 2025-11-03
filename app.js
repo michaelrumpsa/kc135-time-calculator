@@ -229,6 +229,28 @@ requestAnimationFrame(() => {
   resetBtn.addEventListener(ev, resetAll);
 });
 
+// --- Ensure the lion badge link works inside the PWA (iOS/Android) ---
+(() => {
+  const badge = document.getElementById('badgeLink'); // <a id="badgeLink" ...>
+  if (!badge) return;
+
+  const url = badge.href;
+
+  const openExternal = () => {
+    // Some PWAs ignore target=_blank; force a new context
+    try { window.open(url, '_blank'); } catch (_) { location.href = url; }
+  };
+
+  // Block any parent handlers and default navigation that might get swallowed
+  ['click','touchend'].forEach(ev => {
+    badge.addEventListener(ev, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openExternal();
+    }, { passive: false });
+  });
+})();
+
 function buildOffsetOptions(select, def){
   for(let m=0; m<=300; m+=5){
     const h=Math.floor(m/60), mm=m%60;
