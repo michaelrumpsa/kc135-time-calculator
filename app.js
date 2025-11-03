@@ -177,25 +177,32 @@ function validateInputs() {
   });
 });
 
-function highlightFDPWarning(ldZulu, fdpZulu) {
-  const fdpLine = [...out.querySelectorAll('.line')]
-    .find(l => l.textContent.includes('FDP'));
-  if (!fdpLine) return;
+function highlightLimits(ldZulu, fdpZulu, cdtZulu) {
+  // find by the exact label text inside the .name span (ignores hint text)
+  const findLine = (label) => {
+    const n = [...out.querySelectorAll('.line .name')]
+      .find(s => s.textContent.trim() === label);
+    return n ? n.closest('.line') : null;
+  };
 
-  const timeLand = ldZulu.getTime();
-  const timeFDP  = fdpZulu.getTime();
+  const fdpLine = findLine('FDP');
+  const cdtLine = findLine('CDT');
 
-  if (timeLand >= timeFDP) {
-    fdpLine.style.border = '2px solid #ef4444';
-    fdpLine.style.background = 'rgba(239, 68, 68, 0.15)';
-    fdpLine.querySelector('.time').style.color = '#f87171'; // light red text
-  } else {
-    fdpLine.style.border = '';
-    fdpLine.style.background = '';
-    fdpLine.querySelector('.time').style.color = '';
-  }
+  [fdpLine, cdtLine].forEach(l => l && l.classList.remove('warn','bad'));
+
+  const msLand = ldZulu.getTime();
+  const THRESH = 30 * 60 * 1000; // 30 min buffer
+
+  const tag = (line, limit) => {
+    if (!line || !limit) return;
+    const msLimit = limit.getTime();
+    if (msLand >= msLimit) line.classList.add('bad');
+    else if (msLand >= msLimit - THRESH) line.classList.add('warn');
+  };
+
+  tag(fdpLine, fdpZulu);
+  tag(cdtLine, cdtZulu);
 }
-
 
 function calc(){
   out.innerHTML='';
