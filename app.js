@@ -276,39 +276,38 @@ if (copyBtn) copyBtn.disabled = true;
   });
 })();
 
-// --- Copy button (desktop-safe) ---
 if (copyBtn) {
-  ['click', 'touchend'].forEach(ev => {
-    copyBtn.addEventListener(ev, (e) => {
-      if (!lastCopyText) return;
+  copyBtn.addEventListener('click', async () => {
+    if (!lastCopyText) return;
 
-      const done = () => {
-        const old = copyBtn.textContent;
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => (copyBtn.textContent = old), 1200);
-      };
+    let ok = false;
 
-      const fallback = () => {
-        const ta = document.createElement('textarea');
-        ta.value = lastCopyText;
-        ta.setAttribute('readonly', '');
-        ta.style.position = 'fixed';
-        ta.style.top = '-1000px';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); } catch (_) {}
-        document.body.removeChild(ta);
-        done();
-      };
-
-      // Use native clipboard only when available AND secure (https/localhost)
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(lastCopyText).then(done).catch(fallback);
-      } else {
-        fallback();
+    // 1) Try modern Clipboard API
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(lastCopyText);
+        ok = true;
       }
-    }, { passive: false });
+    } catch { /* fall through */ }
+
+    // 2) Always run a fallback to cover desktop edge cases
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = lastCopyText;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');   // legacy path
+      document.body.removeChild(ta);
+      ok = true;
+    } catch { /* ignore */ }
+
+    // feedback
+    const old = copyBtn.textContent;
+    copyBtn.textContent = ok ? 'Copied!' : 'Copy failed';
+    setTimeout(() => copyBtn.textContent = old, 1200);
   });
 }
 
