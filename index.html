@@ -55,12 +55,20 @@
     .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
 
     .section-bar{display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px;}
-.copy-btn{
-  padding:6px 10px;border-radius:10px;border:1px solid var(--stroke);
-  background:#0b1220;color:#cbd5e1;font-size:0.85rem
+.copy-btn {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: none;
+  background: #22c55e;    /* ✅ same green as Calculate */
+  color: #0b1220;         /* matches theme */
+  font-size: 0.8rem;
+  cursor: pointer;
+  height: 28px;
+  line-height: 1;
 }
-.copy-btn:disabled{opacity:.5}
-
+.copy-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
   </style>
