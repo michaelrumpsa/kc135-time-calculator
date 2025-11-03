@@ -177,49 +177,6 @@ function validateInputs() {
   });
 });
 
-function highlightLimits(ldZulu, fdpZulu, cdtZulu) {
-  if (!out) return;
-
-  const lines = out.querySelectorAll('.line');
-  if (!lines.length) return;                 // <- fix
-
-  // find a line by its left-hand label
-  const findLine = (label) => {
-    for (const l of lines) {
-      const nameEl = l.querySelector('.name');
-      if (nameEl && nameEl.textContent.trim().startsWith(label)) return l;
-    }
-    return null;
-  };
-
-  const landLine = findLine('Land');
-  const fdpLine  = findLine('FDP');
-  const cdtLine  = findLine('CDT');
-
-  // clear any previous state
-  [landLine, fdpLine, cdtLine].forEach(el => el?.classList.remove('warn','bad'));
-
-  // validate inputs
-  if (!(ldZulu instanceof Date) || isNaN(ldZulu)) return;
-  const landMs = ldZulu.getTime();
-  const THRESH = 30 * 60 * 1000; // 30 min
-
-  const check = (line, end) => {
-    if (!line || !(end instanceof Date) || isNaN(end)) return;
-    const endMs = end.getTime();
-    if (landMs >= endMs) {
-      line.classList.add('bad');
-      landLine?.classList.add('bad');       // also tint Land if you’d like
-    } else if (landMs >= endMs - THRESH) {
-      line.classList.add('warn');
-      landLine?.classList.add('warn');      // optional: warn on Land too
-    }
-  };
-
-  check(fdpLine, fdpZulu);
-  check(cdtLine, cdtZulu);
-}
-
 
 function calc(){
   out.innerHTML='';
@@ -291,11 +248,6 @@ function calc(){
   line('FDP', fdpEnd, offDep, mode==='BASIC'?'show+16':'show+24');
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
-
-  // Highlight if Land ≥ FDP
-try {
-  highlightLimits(ld, fdpEnd, cdtEnd);
-} catch (_) { /* no-op */ }
   
   // Build compact text for Copy (XXXXL/XXXXZ)
 const pair = (label, dt, off) => `${label}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
