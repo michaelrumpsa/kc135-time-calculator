@@ -178,30 +178,42 @@ function validateInputs() {
 });
 
 function highlightLimits(ldZulu, fdpZulu, cdtZulu) {
-  // find by the exact label text inside the .name span (ignores hint text)
+  if (!out) return; // safety guard
+  const lines = out.querySelectorAll('.line');
+  if (!lines.length) return;
+
+  // find specific lines by exact label
   const findLine = (label) => {
-    const n = [...out.querySelectorAll('.line .name')]
-      .find(s => s.textContent.trim() === label);
-    return n ? n.closest('.line') : null;
+    for (const l of lines) {
+      const nameEl = l.querySelector('.name');
+      if (nameEl && nameEl.textContent.trim() === label) return l;
+    }
+    return null;
   };
 
   const fdpLine = findLine('FDP');
   const cdtLine = findLine('CDT');
 
-  [fdpLine, cdtLine].forEach(l => l && l.classList.remove('warn','bad'));
+  // reset any prior states
+  [fdpLine, cdtLine].forEach(l => {
+    if (l) l.classList.remove('warn', 'bad');
+  });
 
-  const msLand = ldZulu.getTime();
-  const THRESH = 30 * 60 * 1000; // 30 min buffer
+  // make sure we have valid Date objects
+  if (!ldZulu || !(ldZulu instanceof Date) || isNaN(ldZulu)) return;
 
-  const tag = (line, limit) => {
-    if (!line || !limit) return;
-    const msLimit = limit.getTime();
-    if (msLand >= msLimit) line.classList.add('bad');
-    else if (msLand >= msLimit - THRESH) line.classList.add('warn');
+  const landMs = ldZulu.getTime();
+  const THRESH = 30 * 60 * 1000; // 30 minutes
+
+  const check = (line, end) => {
+    if (!line || !(end instanceof Date) || isNaN(end)) return;
+    const endMs = end.getTime();
+    if (landMs >= endMs) line.classList.add('bad');
+    else if (landMs >= endMs - THRESH) line.classList.add('warn');
   };
 
-  tag(fdpLine, fdpZulu);
-  tag(cdtLine, cdtZulu);
+  check(fdpLine, fdpZulu);
+  check(cdtLine, cdtZulu);
 }
 
 function calc(){
