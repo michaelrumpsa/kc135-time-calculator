@@ -92,40 +92,37 @@
   box-shadow: none;
 }
 
-/* === When inputs change since last run (edge glow effect) === */
+/* === When inputs change since last run (enhanced gold+green glow) === */
 #calc.ready.needs-run {
   box-shadow:
-    0 0 15px 4px rgba(34, 197, 94, 0.6),
-    0 0 25px 8px rgba(34, 197, 94, 0.25),
-    inset 0 0 10px rgba(34, 197, 94, 0.2);
-  animation: calcPulse 2s ease-out infinite;
+    0 0 18px 4px rgba(255, 215, 0, 0.9),   /* vivid gold edge */
+    0 0 28px 10px rgba(34, 197, 94, 0.8),  /* rich green aura */
+    inset 0 0 10px rgba(255, 255, 180, 0.3);
+  animation: calcPulse 1.8s ease-in-out infinite;
+  transition: box-shadow 0.3s ease;
 }
 
+/* “Breathing” glow animation */
 @keyframes calcPulse {
-  0%   { box-shadow:
-          0 0 10px 2px rgba(34, 197, 94, 0.5),
-          0 0 20px 6px rgba(34, 197, 94, 0.2),
-          inset 0 0 8px rgba(34, 197, 94, 0.1);
-        }
-  50%  { box-shadow:
-          0 0 20px 5px rgba(34, 197, 94, 0.9),
-          0 0 30px 10px rgba(34, 197, 94, 0.4),
-          inset 0 0 12px rgba(34, 197, 94, 0.25);
-        }
-  100% { box-shadow:
-          0 0 10px 2px rgba(34, 197, 94, 0.5),
-          0 0 20px 6px rgba(34, 197, 94, 0.2),
-          inset 0 0 8px rgba(34, 197, 94, 0.1);
-        }
+  0% {
+    box-shadow:
+      0 0 10px 2px rgba(255, 215, 0, 0.7),
+      0 0 18px 6px rgba(34, 197, 94, 0.6),
+      inset 0 0 6px rgba(255, 255, 200, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 25px 6px rgba(255, 215, 0, 1),
+      0 0 35px 12px rgba(34, 197, 94, 0.9),
+      inset 0 0 12px rgba(255, 255, 200, 0.4);
+  }
+  100% {
+    box-shadow:
+      0 0 10px 2px rgba(255, 215, 0, 0.7),
+      0 0 18px 6px rgba(34, 197, 94, 0.6),
+      inset 0 0 6px rgba(255, 255, 200, 0.2);
+  }
 }
-
-
-@keyframes calcPulse {
-  0%   { box-shadow: 0 0 0 0 #22c55e00; }
-  40%  { box-shadow: 0 0 18px 3px #22c55e66; }
-  100% { box-shadow: 0 0 12px 2px #22c55e33; }
-}
-
 
 button:enabled { cursor: pointer; }
 
