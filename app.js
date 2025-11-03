@@ -199,9 +199,32 @@ function resetAll(){
   applyProfile('SINGLE'); applyMode('BASIC');
   out.innerHTML='';
 
-    // Smooth scroll back to the very top of the page
-  const scroller = document.scrollingElement || document.documentElement;
+// ensure nothing is focused (mobile keyboards can pin the viewport)
+if (document.activeElement && typeof document.activeElement.blur === 'function') {
+  document.activeElement.blur();
+}
+
+// robust scroll-to-top (works across iOS/Android/Safari/Chrome/PWA)
+const scroller =
+  document.scrollingElement || document.documentElement || document.body;
+
+// do it on the next frame (and once more) so layout is settled
+requestAnimationFrame(() => {
+  // try a specific element near the top if present
+  const topEl = document.querySelector('.head') || document.body;
+  if (topEl && topEl.scrollIntoView) {
+    topEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // belt & suspenders
   scroller.scrollTo({ top: 0, behavior: 'smooth' });
+  // hard reset for stubborn engines
+  setTimeout(() => {
+    scroller.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, 120);
+});
 
 }
 
