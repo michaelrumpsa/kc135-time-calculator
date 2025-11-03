@@ -199,31 +199,23 @@ function resetAll(){
   applyProfile('SINGLE'); applyMode('BASIC');
   out.innerHTML='';
 
-// ensure nothing is focused (mobile keyboards can pin the viewport)
+// --- force-jump to the very top (robust on iOS/Android/Safari/Chrome/PWA) ---
 if (document.activeElement && typeof document.activeElement.blur === 'function') {
-  document.activeElement.blur();
+  document.activeElement.blur();          // close keyboard; prevents viewport pin
 }
 
-// robust scroll-to-top (works across iOS/Android/Safari/Chrome/PWA)
-const scroller =
-  document.scrollingElement || document.documentElement || document.body;
+const jumpTop = () => {
+  // try every target some engines honor
+  window.scrollTo(0, 0);
+  const s = document.scrollingElement || document.documentElement || document.body;
+  s.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+};
 
-// do it on the next frame (and once more) so layout is settled
 requestAnimationFrame(() => {
-  // try a specific element near the top if present
-  const topEl = document.querySelector('.head') || document.body;
-  if (topEl && topEl.scrollIntoView) {
-    topEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // belt & suspenders
-  scroller.scrollTo({ top: 0, behavior: 'smooth' });
-  // hard reset for stubborn engines
-  setTimeout(() => {
-    scroller.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, 120);
+  jumpTop();              // immediately after DOM updates
+  setTimeout(jumpTop, 300); // again after animations/resize bars settle
 });
 
 }
