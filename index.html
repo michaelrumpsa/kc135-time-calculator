@@ -54,6 +54,13 @@
     ::placeholder { color:#64748b; opacity:1; }
     .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
 
+    .section-bar{display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px;}
+.copy-btn{
+  padding:6px 10px;border-radius:10px;border:1px solid var(--stroke);
+  background:#0b1220;color:#cbd5e1;font-size:0.85rem
+}
+.copy-btn:disabled{opacity:.5}
+
 }
 
   </style>
@@ -143,7 +150,11 @@
       </div>
     </div>
 
-    <div class="section-title">Timeline</div>
+    <div class="section-bar">
+  <div class="section-title">Timeline</div>
+  <button id="copy" class="copy-btn" disabled>Copy</button>
+</div>
+
     <div id="timeline" class="timeline"></div>
 
     <div class="footer">Works offline. Add to Home screen to install.</div>
