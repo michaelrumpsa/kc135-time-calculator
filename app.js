@@ -109,8 +109,47 @@ function applyMode(m){
   setActive(basicBtn, m==='BASIC'); setActive(augBtn, m==='AUG');
 }
 
+function setValidity(el, isValid) {
+  el.classList.remove('error','ok');
+  // highlight blank OR invalid as error
+  if (!el.value || !isValid) {
+    el.classList.add('error');
+  } else {
+    el.classList.add('ok');
+  }
+}
+
+function validateInputs() {
+  const toValid  = !!parseHM(toEl.value);      // HH:MM, 00–23
+  const durValid = parseDur(durEl.value) != null; // HH:MM
+  setValidity(toEl, toValid);
+  setValidity(durEl, durValid);
+  return toValid && durValid;
+}
+
+// live validation + Enter closes keyboard (and runs calc if valid)
+[toEl, durEl].forEach(el => {
+  el.addEventListener('input',  validateInputs);
+  el.addEventListener('blur',   validateInputs);
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      el.blur();                // closes mobile keyboard
+      if (validateInputs()) calc();   // optional: auto-run
+    }
+  });
+});
+
+
 function calc(){
   out.innerHTML='';
+  if (!validateInputs()) {
+  // focus the first invalid input
+  if (!parseHM(toEl.value)) toEl.focus();
+  else if (parseDur(durEl.value) == null) durEl.focus();
+  return;
+}
+
   const d = new Date();
   if(!dateEl.value){
     const yyyy=d.getUTCFullYear(), mm=String(d.getUTCMonth()+1).padStart(2,'0'), dd=String(d.getUTCDate()).padStart(2,'0');
@@ -246,6 +285,9 @@ requestAnimationFrame(() => {
     copyBtn.textContent = 'Copy';
     copyBtn.style.background = '#22c55e'; }
 
+  [toEl, durEl].forEach(el => el.classList.remove('error','ok'));
+validateInputs();
+
 }
 
 ;['click','touchend'].forEach(ev=>{
@@ -333,5 +375,7 @@ function boot(){
   const off = deviceOffsetHours(); tzDepEl.value=String(off); tzArrEl.value=String(off);
   applyProfile('SINGLE'); applyMode('BASIC'); resetAll();
   updateNowPanel(); setInterval(updateNowPanel, 30000);
+
+validateInputs();
 }
 boot();
