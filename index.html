@@ -144,6 +144,7 @@
   opacity: .6;
   background: #15803d;
   cursor: default;
+  border-radius: 10px;              /* make sure this matches your inline style */
 }
 
 #calc.ready {
@@ -152,43 +153,48 @@
   cursor: pointer;
 }
 
-/* ==== LED runner around the button when inputs changed ==== */
+/* ===== LED chaser ring (thin outline that loops around) ===== */
 #calc.ready.needs-run {
-  position: relative;           /* anchor the pseudo element */
-  z-index: 0;                   /* create a stacking context */
+  position: relative;               /* anchor pseudo element */
+  z-index: 0;
 }
 
-/* The animated border “chasing its tail” */
-#calc.ready.needs-run::before {
-  content: "";
-  position: absolute;
-  inset: -3px;                  /* how far the ring sits outside the edge */
-  border-radius: 12px;          /* match your button radius + outside space */
-  background: conic-gradient(
-    from 0deg,
-    #facc15 0 12%,              /* the “LED” segment */
-    transparent 12% 100%        /* the rest of the track */
-  );
+/* Draw only a 2px ring, with a small bright segment that rotates */
+#calc.ready.needs-run::before{
+  content:"";
+  position:absolute;
+  inset:0;                          /* flush with the button edge */
+  border-radius: 10px;              /* match #calc radius */
+  padding:2px;                      /* ring thickness */
+  background:
+    conic-gradient(
+      from 0deg,
+      #facc15 0 10deg,              /* the “LED” segment length */
+      transparent 10deg 360deg
+    );
+  /* Mask to keep ONLY a thin ring (cut out the center) */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
   animation: calcRingSpin 1.25s linear infinite;
-  filter: drop-shadow(0 0 8px rgba(250,204,21,.55)); /* soft halo */
-  z-index: -1;                  /* sit behind the button so center stays clean */
-  pointer-events: none;
+  pointer-events:none;
 }
 
-/* Optional: a faint, always-on outline while the runner spins */
-#calc.ready.needs-run::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(250, 204, 21, .4) inset;
-  pointer-events: none;
-  z-index: -1;
+/* Optional subtle constant outline under the runner */
+#calc.ready.needs-run::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:10px;
+  box-shadow: 0 0 0 1px rgba(250,204,21,.35) inset;
+  pointer-events:none;
 }
 
-@keyframes calcRingSpin {
-  to { transform: rotate(360deg); }
-}
+/* Rotate the ring */
+@keyframes calcRingSpin { to { transform: rotate(360deg); } }
+
 
 button:enabled { cursor: pointer; }
 
