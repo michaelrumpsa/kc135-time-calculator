@@ -96,47 +96,59 @@ function addCalcLedOutline(){
   const btn = document.getElementById('calc');
   if (!btn) return;
 
-  // Remove any previous overlay (hot reload / reset)
+  // Remove any previous overlay
   btn.querySelectorAll('.led-outline').forEach(n => n.remove());
 
   const ns = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(ns, 'svg');
-  svg.setAttribute('class','led-outline');
-  svg.setAttribute('viewBox','0 0 100 100');
-  svg.setAttribute('preserveAspectRatio','none');
-  svg.setAttribute('aria-hidden','true');
 
-  // Match the button’s rounded corners so the stroke hugs the edge
+  // Current button size (in px)
+  const w = Math.max(10, btn.clientWidth);
+  const h = Math.max(10, btn.clientHeight);
+
+  // Stroke settings
+  const strokeW = 3;                 // LED thickness
+  const inset   = strokeW / 2 + 1;   // keep stroke from clipping
+
+  // Match the button's corner radius in px
   const cs  = getComputedStyle(btn);
-  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;  // fallback to 10px
-  const h   = btn.getBoundingClientRect().height || 44;  // px
-  const rxp = Math.max(0, Math.min(25, (rPx / h) * 100)); // % of viewBox
+  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;
 
-  // Base ring
+  // Build SVG at the button's exact pixel size
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('class', 'led-outline');
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.setAttribute('width',  '100%');
+  svg.setAttribute('height', '100%');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet'); // no stretch
+  svg.setAttribute('aria-hidden', 'true');
+
+  // Base ring (subtle track)
   const base = document.createElementNS(ns, 'rect');
-  base.setAttribute('class','base');
-  base.setAttribute('x','1.25');
-  base.setAttribute('y','1.25');
-  base.setAttribute('width','97.5');
-  base.setAttribute('height','97.5');
-  base.setAttribute('rx', rxp);
-  base.setAttribute('ry', rxp);
-  base.setAttribute('pathLength','100');   // perimeter normalized
+  base.setAttribute('class', 'base');
+  base.setAttribute('x', inset);
+  base.setAttribute('y', inset);
+  base.setAttribute('width',  Math.max(0, w - inset*2));
+  base.setAttribute('height', Math.max(0, h - inset*2));
+  base.setAttribute('rx', rPx);
+  base.setAttribute('ry', rPx);
+  base.setAttribute('pathLength', '100');
+  base.style.strokeWidth = String(strokeW);
 
-  // Runner (single lit segment)
+  // Runner (single solid segment)
   const runner = document.createElementNS(ns, 'rect');
-  runner.setAttribute('class','runner');
-  runner.setAttribute('x','1.25');
-  runner.setAttribute('y','1.25');
-  runner.setAttribute('width','97.5');
-  runner.setAttribute('height','97.5');
-  runner.setAttribute('rx', rxp);
-  runner.setAttribute('ry', rxp);
-  runner.setAttribute('pathLength','100');
+  runner.setAttribute('class', 'runner');
+  runner.setAttribute('x', inset);
+  runner.setAttribute('y', inset);
+  runner.setAttribute('width',  Math.max(0, w - inset*2));
+  runner.setAttribute('height', Math.max(0, h - inset*2));
+  runner.setAttribute('rx', rPx);
+  runner.setAttribute('ry', rPx);
+  runner.setAttribute('pathLength', '100');
+  runner.style.strokeWidth = String(strokeW);
 
-  // **Make it ONE solid segment** (e.g., 18% lit, 82% gap)
-  const dash = 18; // tweak 10–30 to taste
-  runner.style.strokeDasharray = `${dash} ${100 - dash}`;
+  // ONE segment: 20% lit, 80% gap (tweak 10–30 for shorter/longer snake)
+  const dash = 20;
+  runner.style.strokeDasharray  = `${dash} ${100 - dash}`;
   runner.style.strokeDashoffset = '0';
 
   svg.appendChild(base);
@@ -530,16 +542,16 @@ function genTZOptions(select){
 }
 
 function boot(){
-  genTZOptions(tzDepEl); genTZOptions(tzArrEl);
-  buildOffsetOptions(offShowEl,195); buildOffsetOptions(offBriefEl,165);
-  buildOffsetOptions(offStepEl,120); buildOffsetOptions(offEngEl,30);
+  // ... your existing boot code ...
+  addCalcLedOutline();
 
-  const off = deviceOffsetHours(); tzDepEl.value=String(off); tzArrEl.value=String(off);
-  applyProfile('SINGLE'); applyMode('BASIC'); resetAll();
-  updateNowPanel(); setInterval(updateNowPanel, 30000);
-
-  addCalcLedOutline();                 // build the overlay once
-  window.addEventListener('resize', addCalcLedOutline);   // keep radius matched
+  // Recompute if the button size changes (orientation, viewport, font size)
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => addCalcLedOutline());
+    ro.observe(document.getElementById('calc'));
+  } else {
+    window.addEventListener('resize', addCalcLedOutline);
+  }
 
   validateInputs();
 }
