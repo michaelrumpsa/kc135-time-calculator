@@ -75,18 +75,26 @@
   line-height:1;
   cursor:pointer;
 }
-.section-bar .copy-btn:disabled{ opacity:.5; cursor:default; }
+/* .section-bar .copy-btn:disabled{ opacity:.5; cursor:default; }*/
+
+/* Center the FDP Notice pill horizontally within the section-bar */
+.section-bar{
+  display:grid;
+  grid-template-columns: 1fr auto; /* title grows, button fits */
+  align-items:center;
+  column-gap:8px;
+}
 
 /* Center the FDP Notice pill horizontally within the section-bar */
 #fdpNotice {
   position: center;
-  /* left: 50%;*/
-  /* top: 50%;*/
-  /* transform: translate(-50%, -50%);*/
-  pointer-events: none;   /* don’t block Copy button clicks */
-  z-index: 2;             /* ensure it appears above the bar */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2;
 }
-    
+
     /* FDP Notice Pill */
 .notice {
   display: none;
