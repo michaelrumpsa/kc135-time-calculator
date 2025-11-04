@@ -174,7 +174,6 @@
 }
 
 /* Single “snake” runner */
-/* single solid runner: one dash + huge gap so it never repeats */
 #calc .led-outline .runner{
   fill: none !important;
   stroke: #fde047;
@@ -182,19 +181,21 @@
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
   filter: drop-shadow(0 0 8px rgba(250,204,21,.75));
-  pathLength: 100;
 
-  /* segment length in % of perimeter */
-  --seg: 22;                         /* tweak: 16–28 looks nice */
+  /* Use a big virtual perimeter so we can run smooth */
+  /* (JS will set pathLength="1000" too) */
+  pathLength: 1000;
 
-  /* one dash, then a very large gap (prevents multiple segments) */
-  stroke-dasharray: var(--seg) 200;
-
-  /* move the segment around the perimeter */
+  /* visible segment length (in same 0–1000 units) */
+  /* tweak 140–260 until it looks right to you */
+  stroke-dasharray: 220 20000;   /* << huge gap prevents any repeat */
+  stroke-dashoffset: 0;
   animation: calcChase 1.15s linear infinite;
 }
 
-@keyframes calcChase { to { stroke-dashoffset: -100; } }
+@keyframes calcChase {
+  to { stroke-dashoffset: -1000; }  /* travel one full loop */
+}
 
 button:enabled { cursor: pointer; }
 
