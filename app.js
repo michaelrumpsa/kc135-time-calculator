@@ -367,7 +367,7 @@ requestAnimationFrame(() => {
   if (copyBtn) {
     copyBtn.disabled = true;
     copyBtn.textContent = 'Copy';
-    /* copyBtn.style.background = '#22c55e'; } */
+    copyBtn.style.background = '#22c55e'; }
 
   [toEl, durEl].forEach(el => el.classList.remove('error','ok'));
 validateInputs();
