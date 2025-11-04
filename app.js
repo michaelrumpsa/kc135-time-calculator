@@ -531,13 +531,17 @@ function genTZOptions(select){
 
 function boot(){
   genTZOptions(tzDepEl); genTZOptions(tzArrEl);
-  buildOffsetOptions(offShowEl,195); buildOffsetOptions(offBriefEl,165); buildOffsetOptions(offStepEl,120); buildOffsetOptions(offEngEl,30);
+  buildOffsetOptions(offShowEl,195); buildOffsetOptions(offBriefEl,165);
+  buildOffsetOptions(offStepEl,120); buildOffsetOptions(offEngEl,30);
+
   const off = deviceOffsetHours(); tzDepEl.value=String(off); tzArrEl.value=String(off);
   applyProfile('SINGLE'); applyMode('BASIC'); resetAll();
   updateNowPanel(); setInterval(updateNowPanel, 30000);
 
-  addCalcLedOutline();   // <— add this line
+  addCalcLedOutline();                 // build the overlay once
+  window.addEventListener('resize', addCalcLedOutline);   // keep radius matched
 
   validateInputs();
 }
+
 boot();
