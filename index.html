@@ -54,49 +54,45 @@
     ::placeholder { color:#64748b; opacity:1; }
     .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
 
-    .section-bar{display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px;}
+/* Section header row:  title | pill | copy  */
 .section-bar{
-  display:grid;
-  grid-template-columns: 1fr auto; /* title grows, button fits */
-  align-items:center;
-  column-gap:8px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  column-gap: 8px;
+  margin: 10px 0 6px;
 }
 
-/* override the global 100% width */
-.section-bar .copy-btn{
-  width:auto;
-  display:inline-block;
-  height:42px;                 /* same as your big buttons */
-  padding:10px 18px;
-  border-radius:12px;
-  background:#22c55e;          /* Calculate green */
-  color:#0b1220;               /* theme text */
-  border:none;
-  line-height:1;
-  cursor:pointer;
-}
-/* .section-bar .copy-btn:disabled{ opacity:.5; cursor:default; }*/
-
-/* Center the FDP Notice pill horizontally within the section-bar */
-.section-bar{
-  display:grid;
-  grid-template-columns: 1fr auto; /* title grows, button fits */
-  align-items:center;
-  column-gap:8px;
+/* place each child explicitly */
+.section-bar .section-title{
+  grid-column: 1;
+  justify-self: start;
 }
 
-/* Center the FDP Notice pill horizontally within the section-bar */
-#fdpNotice {
-  position: center;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+#fdpNotice{
+  grid-column: 2;
+  justify-self: center;
+  position: static;          /* IMPORTANT: no absolute/left/top/transform */
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
 }
 
-    /* FDP Notice Pill */
-.notice {
+.section-bar .copy-btn{
+  grid-column: 3;
+  justify-self: end;
+  width: auto;
+  height: 42px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: #22c55e;
+  color: #0b1220;
+  border: none;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* FDP Notice pill states */
+.notice{
   display: none;
   font-size: 0.82rem;
   font-weight: 500;
@@ -104,26 +100,23 @@
   border-radius: 999px;
   white-space: nowrap;
   border: 1px solid transparent;
-  transition: all 0.3s ease;
+  transition: all .3s ease;
+}
+.notice.warn,
+.notice.bad{
+  display: inline-flex;      /* make it appear when in a state */
+  align-items: center;
+  gap: 6px;
+}
+.notice.warn{
+  background:#3a2a00; color:#fde68a; border-color:#b45309;
+  box-shadow:0 0 12px rgba(234,179,8,.4);
+}
+.notice.bad{
+  background:#3b0f0f; color:#fecaca; border-color:#7f1d1d;
+  box-shadow:0 0 14px rgba(239,68,68,.4);
 }
 
-/* Approaching FDP (yellow) */
-.notice.warn {
-  /*display: inline-block;*/
-  background: #3a2a00;
-  color: #fde68a;
-  border-color: #b45309;
-  box-shadow: 0 0 12px rgba(234,179,8,0.4);
-}
-
-/* Exceeded FDP (red) */
-.notice.bad {
-  /* display: inline-block;*/
-  background: #3b0f0f;
-  color: #fecaca;
-  border-color: #7f1d1d;
-  box-shadow: 0 0 14px rgba(239,68,68,0.4);
-}
 
     /* === Calculate button states === */
 #calc {
