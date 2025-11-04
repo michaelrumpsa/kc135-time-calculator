@@ -151,13 +151,14 @@
 
 /* LED outline (SVG overlay) */
 #calc { position: relative; overflow: visible; }
-#calc .led-outline {
+#calc .led-outline{
   position: absolute;
-  inset: -3px;                         /* sit just outside the button edge */
+  inset: -3px;                  /* just outside the button edge */
   width: calc(100% + 6px);
   height: calc(100% + 6px);
   pointer-events: none;
-  display: none;                       /* only show in needs-run */
+  display: none;                /* only visible in .ready.needs-run */
+  z-index: 1;                   /* make sure it sits on top */
 }
 
 /* Only show when inputs changed */
