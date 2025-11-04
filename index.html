@@ -174,31 +174,27 @@
 }
 
 /* Single “snake” runner */
+/* single solid runner: one dash + huge gap so it never repeats */
 #calc .led-outline .runner{
-  fill:none;
-  stroke:#fde047;           /* bright yellow */
-  stroke-width:3;
-  stroke-linecap:round;
-  vector-effect:non-scaling-stroke;
-  filter:drop-shadow(0 0 8px rgba(250,204,21,.75));
+  fill: none !important;
+  stroke: #fde047;
+  stroke-width: 3;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 8px rgba(250,204,21,.75));
+  pathLength: 100;
 
-  /* Treat the perimeter as 100 units so percentages work */
-  pathLength:100;
+  /* segment length in % of perimeter */
+  --seg: 22;                         /* tweak: 16–28 looks nice */
 
-  /* ONE long dash + one gap => single segment */
-  /* Tweak --dash to change runner length (in % of perimeter) */
-  --dash:22;
-  stroke-dasharray: var(--dash) calc(100 - var(--dash));
+  /* one dash, then a very large gap (prevents multiple segments) */
+  stroke-dasharray: var(--seg) 200;
+
+  /* move the segment around the perimeter */
   animation: calcChase 1.15s linear infinite;
 }
 
-@keyframes calcChase{
-  to { stroke-dashoffset:-100; }  /* one full loop */
-}
-
-    /* ensure the runner can never fill the button */
-#calc .led-outline .runner { fill: none; }
-
+@keyframes calcChase { to { stroke-dashoffset: -100; } }
 
 button:enabled { cursor: pointer; }
 
