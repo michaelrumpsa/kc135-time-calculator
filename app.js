@@ -97,30 +97,42 @@ function addCalcLedOutline(){
   if (!btn || btn.querySelector('.led-outline')) return;
 
   const svgNS = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(svgNS, 'svg');
+  const svg   = document.createElementNS(svgNS, 'svg');
   svg.setAttribute('class', 'led-outline');
   svg.setAttribute('viewBox', '0 0 100 100');
   svg.setAttribute('preserveAspectRatio', 'none');
-
-  // add this line:
   svg.setAttribute('aria-hidden', 'true');
 
-  // Compute rx from the button’s CSS border-radius so corners match
-  const cs = getComputedStyle(btn);
-  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;
-  const h = btn.getBoundingClientRect().height || 44;
-  const rxPercent = Math.max(0, Math.min(25, (rPx / h) * 100));
+  // Match the button’s corner radius so the stroke hugs the edge
+  const cs       = getComputedStyle(btn);
+  const rPx      = parseFloat(cs.borderTopLeftRadius) || 10;
+  const h        = btn.getBoundingClientRect().height || 44;
+  const rxPct    = Math.max(0, Math.min(25, (rPx / h) * 100)); // 0–25% works well
 
-  const rect = document.createElementNS(svgNS, 'rect');
-  rect.setAttribute('x', '1.25');
-  rect.setAttribute('y', '1.25');
-  rect.setAttribute('width', '97.5');
-  rect.setAttribute('height', '97.5');
-  rect.setAttribute('rx', rxPercent);
-  rect.setAttribute('ry', rxPercent);
-  rect.setAttribute('pathLength', '100');
+  // Base ring
+  const base = document.createElementNS(svgNS, 'rect');
+  base.setAttribute('class', 'base');
+  base.setAttribute('x', '1.25');
+  base.setAttribute('y', '1.25');
+  base.setAttribute('width',  '97.5');
+  base.setAttribute('height', '97.5');
+  base.setAttribute('rx', rxPct);
+  base.setAttribute('ry', rxPct);
+  base.setAttribute('pathLength', '100');
 
-  svg.appendChild(rect);
+  // Moving runner
+  const run = document.createElementNS(svgNS, 'rect');
+  run.setAttribute('class', 'runner');
+  run.setAttribute('x', '1.25');
+  run.setAttribute('y', '1.25');
+  run.setAttribute('width',  '97.5');
+  run.setAttribute('height', '97.5');
+  run.setAttribute('rx', rxPct);
+  run.setAttribute('ry', rxPct);
+  run.setAttribute('pathLength', '100');
+
+  svg.appendChild(base);
+  svg.appendChild(run);
   btn.appendChild(svg);
 }
 
