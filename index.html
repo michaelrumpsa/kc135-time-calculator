@@ -138,55 +138,23 @@
 }
 
 
-/* Calculate Button Behavior LED Chasing its tail */
-/* Keep your existing base/ready styles as-is, but ensure radius is set */
+/* Default Calculate button */
 #calc {
-  --radius: 10px;                      /* match your inline radius */
-  border-radius: var(--radius);
-  transition: background .2s ease, opacity .2s ease;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-#calc.ready      { opacity: 1; background:#22c55e; cursor:pointer; }
-#calc            { opacity: .6; background:#15803d; cursor:default; }
-
-/* ====== LED border overlay ====== */
-#calc{ position:relative; overflow:visible; }
-
-/* overlay container sits just outside the button edge */
-#calc .led-outline{
-  position:absolute;
-  inset:0;                 /* was -3px; we'll inset the stroke in JS */
-  pointer-events:none;
-  display:none;
-  z-index:1;
-}
-#calc.ready.needs-run .led-outline{ display:block; }
-
-/* base ring (subtle continuous track) */
-#calc .led-outline .base{
-  fill:none;
-  stroke:#fde04733;             /* translucent yellow track */
-  stroke-width:3;
-  vector-effect:non-scaling-stroke;
+/* Highlight when active (ready to calculate) */
+#calc.ready.needs-run {
+  border-color: #facc15; /* bright yellow */
+  box-shadow: 0 0 12px 2px rgba(250, 204, 21, 0.8);
 }
 
-/* the single “snake” runner */
-#calc .led-outline .runner{
-  fill:none;
-  stroke:#facc15;               /* bright yellow */
-  stroke-width:3;
-  stroke-linecap:round;
-  vector-effect:non-scaling-stroke;
-  filter:drop-shadow(0 0 8px rgba(250,204,21,.75));
-  animation: calcChase 1.15s linear infinite;
-}
-
-/* travel one full perimeter (pathLength=100 → -100 = one loop) */
-@keyframes calcChase{ to { stroke-dashoffset:-100; } }
-
-/* accessibility */
-@media (prefers-reduced-motion:reduce){
-  #calc .led-outline .runner{ animation:none; }
+/* Optional: subdued when inactive */
+#calc:disabled {
+  border-color: transparent;
+  box-shadow: none;
+  opacity: 0.6;
 }
 
 button:enabled { cursor: pointer; }
