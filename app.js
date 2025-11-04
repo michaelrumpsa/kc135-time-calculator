@@ -281,7 +281,7 @@ if (ld.getTime() >= fdpEnd.getTime()) {
   line('PIC Extend Alert', picExtAlert, offDep, 'alert+8');
   line('Re-Eval ORM', reevalORM, offDep, 'T/O+4');
   line('Train', train, offDep, 'show+12');
-  line('Operational TAC', opTac, offDep, 'show+14');
+  line('Tactical', opTac, offDep, 'show+14');
   lineDual('Land', ld, offArr, null, tzLabelFromOffset(offArr));
   line('FDP', fdpEnd, offDep, mode==='BASIC'?'show+16':'show+24');
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
