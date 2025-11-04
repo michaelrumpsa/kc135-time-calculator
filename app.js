@@ -276,7 +276,7 @@ if (ld.getTime() >= fdpEnd.getTime()) {
   durLine.innerHTML = `<div class="name">Sortie Dur</div><div class="time">${dh}${dm}</div>`;
   out.appendChild(durLine);
 
-  line('Late T/O Cap', lateTOCap, offDep, 'FDP − Sortie Dur');
+  line('Late T/O Cap', lateTOCap, offDep, 'FDP − Dur');
   line('Latest Alert', latestAlert, offDep, 'alert+6');
   line('PIC Extend Alert', picExtAlert, offDep, 'alert+8');
   line('Re-Eval ORM', reevalORM, offDep, 'T/O+4');
