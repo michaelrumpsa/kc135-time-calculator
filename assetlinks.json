@@ -3,9 +3,9 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.your.package.name",
+      "package_name": "com.simba.kc135timecalc",
       "sha256_cert_fingerprints": [
-        "AA:BB:CC:...:ZZ"
+        "75990F5E1A48999C43916A81B1C593432907404294065F747A2945BC2A2C47441D09E87B45F6E3794C426DFD41E0EDE446F4156D"
       ]
     }
   }
