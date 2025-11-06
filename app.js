@@ -11,6 +11,160 @@ const nowPanel = $('nowPanel');
 const copyBtn = $('copy');
 let lastCopyText = '';
 
+// ---------- Defaults for Mission Profiles ----------
+
+// Safe deep clone helper (covers older Safari/Android that lack structuredClone)
+const SC = (obj) => (typeof structuredClone === 'function'
+  ? structuredClone(obj)
+  : JSON.parse(JSON.stringify(obj)));
+
+const DEFAULTS_KEY = 'kc135.defaults.v1';
+
+const el = {
+  modal: $('defaultsModal'),
+  btn: $('defaultsBtn'),
+  save: $('defaultsSave'),
+  cancel: $('defaultsCancel'),
+  reset: $('defaultsReset'),
+
+  // Modal dropdowns
+  d_single_show: $('d_single_show'),
+  d_single_brief: $('d_single_brief'),
+  d_single_step: $('d_single_step'),
+  d_single_eng: $('d_single_eng'),
+
+  d_form_show: $('d_form_show'),
+  d_form_brief: $('d_form_brief'),
+  d_form_step: $('d_form_step'),
+  d_form_eng: $('d_form_eng'),
+};
+
+// Fallback defaults shown on first load
+const FALLBACK_DEFAULTS = {
+  single:   { show: '3:15', brief: '2:45', step: '2:00', eng: '0:30' },
+  formation:{ show: '3:30', brief: '3:00', step: '2:15', eng: '0:30' },
+};
+
+function loadDefaults(){
+  try {
+    return JSON.parse(localStorage.getItem(DEFAULTS_KEY)) || SC(FALLBACK_DEFAULTS);
+  } catch {
+    return SC(FALLBACK_DEFAULTS);
+  }
+}
+
+function saveDefaults(obj){
+  localStorage.setItem(DEFAULTS_KEY, JSON.stringify(obj));
+}
+
+// Copies the live dropdown's options into the modal dropdowns
+function cloneOptions(fromSelect, toSelect){
+  toSelect.innerHTML = '';
+  [...fromSelect.options].forEach(o=>{
+    let opt = document.createElement('option');
+    opt.value = o.value;
+    opt.textContent = o.textContent;
+    toSelect.appendChild(opt);
+  });
+}
+
+// Sync modal options with your app's real dropdown options
+function hydrateModalOptions(){
+  cloneOptions(offShowEl,  el.d_single_show); cloneOptions(offShowEl,  el.d_form_show);
+  cloneOptions(offBriefEl, el.d_single_brief);cloneOptions(offBriefEl, el.d_form_brief);
+  cloneOptions(offStepEl,  el.d_single_step); cloneOptions(offStepEl,  el.d_form_step);
+  cloneOptions(offEngEl,   el.d_single_eng);  cloneOptions(offEngEl,   el.d_form_eng);
+}
+
+// Loads saved defaults into the modal UI
+function setModalFromDefaults(d){
+  el.d_single_show.value  = d.single.show;
+  el.d_single_brief.value = d.single.brief;
+  el.d_single_step.value  = d.single.step;
+  el.d_single_eng.value   = d.single.eng;
+
+  el.d_form_show.value  = d.formation.show;
+  el.d_form_brief.value = d.formation.brief;
+  el.d_form_step.value  = d.formation.step;
+  el.d_form_eng.value   = d.formation.eng;
+}
+
+function getDefaultsFromModal(){
+  return {
+    single: {
+      show: el.d_single_show.value,
+      brief: el.d_single_brief.value,
+      step: el.d_single_step.value,
+      eng:  el.d_single_eng.value,
+    },
+    formation: {
+      show: el.d_form_show.value,
+      brief: el.d_form_brief.value,
+      step: el.d_form_step.value,
+      eng:  el.d_form_eng.value,
+    }
+  };
+}
+
+// Opens the modal
+function openDefaultsModal(){
+  hydrateModalOptions();
+  setModalFromDefaults(loadDefaults());
+  el.modal.style.display = 'block';
+}
+
+function closeDefaultsModal(){
+  el.modal.style.display = 'none';
+}
+
+// Modal button actions
+el.btn.addEventListener('click', openDefaultsModal);
+el.cancel.addEventListener('click', closeDefaultsModal);
+el.reset.addEventListener('click', () => {
+  setModalFromDefaults(SC(FALLBACK_DEFAULTS));
+});
+el.save.addEventListener('click', () => {
+  saveDefaults(getDefaultsFromModal());
+  closeDefaultsModal();
+});
+
+// Apply stored defaults when SINGLE SHIP / FORMATION is clicked
+function applyProfileDefaults(profile){
+  const d = loadDefaults();
+  const src = d[profile];
+  if(!src) return;
+
+  offShowEl.value  = src.show;
+  offBriefEl.value = src.brief;
+  offStepEl.value  = src.step;
+  offEngEl.value   = src.eng;
+
+  // fire “change” on all 4 selects so your main code updates automatically
+  ['change'].forEach(evt=>{
+    offShowEl.dispatchEvent(new Event(evt));
+    offBriefEl.dispatchEvent(new Event(evt));
+    offStepEl.dispatchEvent(new Event(evt));
+    offEngEl.dispatchEvent(new Event(evt));
+  });
+}
+
+// Hook the profile buttons
+singleBtn.addEventListener('click', () => applyProfileDefaults('single'));
+formBtn.addEventListener('click',   () => applyProfileDefaults('formation'));
+
+// First-run behavior: show modal if never seen
+(function firstRunPrompt(){
+  const seenKey = DEFAULTS_KEY + '.seen';
+  if(!localStorage.getItem(seenKey)){
+    if(!localStorage.getItem(DEFAULTS_KEY)){
+      saveDefaults(SC(FALLBACK_DEFAULTS));
+    }
+    openDefaultsModal();
+    localStorage.setItem(seenKey, '1');
+  }
+})();
+
+
 function deviceOffsetHours(){ return - (new Date().getTimezoneOffset()) / 60; }
 function formatOffsetLabel(off){
   const sign = off>=0?'+':'';
