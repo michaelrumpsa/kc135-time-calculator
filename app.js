@@ -98,15 +98,15 @@ function hydrateModalOptions(){
 // Load saved defaults into the modal UI
 function setModalFromDefaults(d){
   const s = d.single, f = d.formation;
-  el.d_single_show.value  = String(s.show);
-  el.d_single_brief.value = String(s.brief);
-  el.d_single_step.value  = String(s.step);
-  el.d_single_eng.value   = String(s.eng);
+  setSelectValueAndPaint(el.d_single_show,  s.show);
+  setSelectValueAndPaint(el.d_single_brief, s.brief);
+  setSelectValueAndPaint(el.d_single_step,  s.step);
+  setSelectValueAndPaint(el.d_single_eng,   s.eng);
 
-  el.d_form_show.value    = String(f.show);
-  el.d_form_brief.value   = String(f.brief);
-  el.d_form_step.value    = String(f.step);
-  el.d_form_eng.value     = String(f.eng);
+  setSelectValueAndPaint(el.d_form_show,    f.show);
+  setSelectValueAndPaint(el.d_form_brief,   f.brief);
+  setSelectValueAndPaint(el.d_form_step,    f.step);
+  setSelectValueAndPaint(el.d_form_eng,     f.eng);
 }
 
 function getDefaultsFromModal(){
@@ -134,9 +134,15 @@ function openDefaultsModal(){
 
   const spin = () => {
     if (!ready()) { requestAnimationFrame(spin); return; }
+
     hydrateModalOptions();
-    setModalFromDefaults(loadDefaults());
     el.modal.style.display = 'block';
+
+    // Set values on the next frame so mobile paints correctly
+    requestAnimationFrame(() => {
+      const d = loadDefaults();
+      setModalFromDefaults(d);
+    });
   };
   spin();
 }
@@ -177,6 +183,24 @@ el.cancel.addEventListener('click', () => {
     saveDefaults(SC(ZERO_DEFAULTS));
   }
 })();
+
+function setSelectValueAndPaint(sel, val) {
+  const v = String(val);
+  sel.value = v;
+
+  // If the browser didn't accept .value (rare), select by walking options
+  if (sel.value !== v) {
+    const idx = [...sel.options].findIndex(o => o.value === v);
+    if (idx >= 0) sel.selectedIndex = idx;
+  }
+
+  // Nudge WebKit/Chrome mobile to repaint the visible text
+  sel.blur?.();
+  // Force a reflow
+  // eslint-disable-next-line no-unused-expressions
+  sel.offsetHeight;
+  sel.dispatchEvent(new Event('change', { bubbles: true }));
+}
 
 
 function deviceOffsetHours(){ return - (new Date().getTimezoneOffset()) / 60; }
@@ -286,10 +310,11 @@ function applyProfile(p){
   const src = d.enabled ? (p === 'SINGLE' ? d.single : d.formation)
                         : ZERO_DEFAULTS[p === 'SINGLE' ? 'single' : 'formation'];
 
-  offShowEl.value  = String(src.show);
-  offBriefEl.value = String(src.brief);
-  offStepEl.value  = String(src.step);
-  offEngEl.value   = String(src.eng);
+  setSelectValueAndPaint(offShowEl,  src.show);
+  setSelectValueAndPaint(offBriefEl, src.brief);
+  setSelectValueAndPaint(offStepEl,  src.step);
+  setSelectValueAndPaint(offEngEl,   src.eng);
+
 
   // notify dependents
   ['change'].forEach(evt=>{
