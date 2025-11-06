@@ -124,37 +124,32 @@
   opacity:1;
 }
 
-/* === Defaults modal: final minimal rules === */
-
-/* Side-by-side label + select */
+/* Always 2 columns, even on tiny portrait screens */
 #defaultsModal .defaults-grid{
-  display: grid !important;
-  grid-template-columns: 110px 1fr !important;  /* label | select */
-  column-gap: 10px !important;
-  row-gap: 8px !important;
-  align-items: center !important;
-}
-#defaultsModal .defaults-grid > label{
-  margin: 0; font-size: .9rem; color: #cbd5e1; white-space: nowrap;
-}
-#defaultsModal .defaults-grid > select{
-  width: 100%; min-width: 0; line-height: 1.2;
-  color:#e5e7eb; background:#0b1220; -webkit-text-fill-color:#e5e7eb;
-}
-/* Narrow fallback: stack on tiny phones */
-@media (max-width: 360px){
-  #defaultsModal .defaults-grid{ grid-template-columns: 1fr !important; }
+  display:grid !important;
+  grid-template-columns: max-content 1fr !important; /* label | select */
+  column-gap:10px !important;
+  row-gap:8px !important;
+  align-items:center !important;
 }
 
-/* Selects: always stretch and show readable text in dark UI */
-#defaultsModal select{
-  width: 100% !important;
-  min-width: 0 !important;
-  display: block !important;
-  line-height: 1.2;
-  color: #e5e7eb;
-  background: #0b1220;
-  -webkit-text-fill-color: #e5e7eb;
+/* Tight, non-wrapping labels; tweak size so they fit */
+#defaultsModal .defaults-grid > label{
+  margin:0;
+  font-size:.9rem;
+  color:#cbd5e1;
+  white-space:nowrap;
+}
+
+/* Selects can shrink; keep text visible on Android */
+#defaultsModal .defaults-grid > select{
+  min-width:0;              /* allow shrinking instead of wrapping */
+  width:100%;
+  line-height:1.2;
+  color:#e5e7eb;
+  background:#0b1220;
+  -webkit-text-fill-color:#e5e7eb;
+  padding:8px 10px;         /* slightly tighter for small phones */
 }
 
 /* Option text color on Android list UI */
