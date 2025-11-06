@@ -243,11 +243,6 @@ function buildUTCDate(dateStr, hm){
   return new Date(ms);
 }
 
-function buildDateInOffset(dateStr, hm, tzOffsetHours){
-  const [Y,Mo,D]=dateStr.split('-').map(Number);
-  const ms = Date.UTC(Y,Mo-1,D, hm.h - tzOffsetHours, hm.m,0,0);
-  return new Date(ms);
-}
 function addMin(d,m){ return new Date(d.getTime()+m*60000); }
 function fmtLocalWithOffset(dt, offsetHours){
   const ms = dt.getTime() + offsetHours*3600*1000;
@@ -664,26 +659,6 @@ function buildOffsetOptions(select, def){
   }
 }
 
-function applySelectVisibilityFix(){
-  const selects = [tzDepEl, tzArrEl, offShowEl, offBriefEl, offStepEl, offEngEl];
-
-  selects.forEach(sel=>{
-    // Apply the paint-fix when collapsed
-    sel.classList.add('select-fix');
-
-    // Remove before opening the native picker so options render normally
-    const removeFix = () => sel.classList.remove('select-fix');
-    const addFix = () => sel.classList.add('select-fix');
-
-    sel.addEventListener('mousedown', removeFix, {passive:true});
-    sel.addEventListener('touchstart', removeFix, {passive:true});
-
-    // Re-apply after selection closes
-    sel.addEventListener('blur', addFix, {passive:true});
-    sel.addEventListener('change', addFix, {passive:true});
-  });
-}
-
 function boot(){
   genTZOptions(tzDepEl);
   genTZOptions(tzArrEl);
@@ -696,9 +671,6 @@ function boot(){
   const off = deviceOffsetHours();
   tzDepEl.value = String(off);
   tzArrEl.value = String(off);
-
-  // <<< add this line
-  applySelectVisibilityFix();
 
   resetAll();
   updateNowPanel();
