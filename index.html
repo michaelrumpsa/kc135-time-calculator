@@ -157,14 +157,26 @@
 }
 
 
-/* Ensure selected text shows up in dark mode on mobile for main selects */
+/* Force visible text on SELECTS (keep text-fill here) */
 #off-show, #off-brief, #off-step, #off-eng,
-#tzDep, #tzArr, #date, #to, #dur {
+#tzDep, #tzArr {
   color: #e5e7eb;
   background: #0b1220;
   -webkit-text-fill-color: #e5e7eb;
 }
-   
+
+/* Inputs: no text-fill so placeholder can be grey */
+#date, #to, #dur {
+  color: #e5e7eb;
+  background: #0b1220;
+}
+
+/* Placeholder tone */
+#to::placeholder, #dur::placeholder, #date::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+  
     
 #fdpNotice {
   position: relative;              /* normal flow instead of absolute */
