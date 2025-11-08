@@ -358,14 +358,16 @@ function validateInputs() {
 
     // Detect if current inputs differ from last run
     const sig = getCalcSignature();
-    if (sig !== lastRunSig) {
+    // Only show the yellow outline if we've actually done a calc before
+    if (lastRunSig && sig !== lastRunSig) {
       calcBtn.classList.add('needs-run');
+    } else {
+      calcBtn.classList.remove('needs-run');
     }
   }
 
   return toValid && durValid;
 }
-
 
 // live validation + Enter closes keyboard (and runs calc if valid)
 [toEl, durEl].forEach(el => {
@@ -567,6 +569,12 @@ requestAnimationFrame(() => {
     copyBtn.disabled = true;
     copyBtn.textContent = 'Copy';
     copyBtn.style.background = '#22c55e'; }
+
+  // Clear prior-run signature & button visuals after a Reset
+lastRunSig = '';                         
+calcBtn.classList.remove('needs-run');   // remove yellow outline
+calcBtn.classList.remove('ready');       // return to disarmed state
+calcBtn.disabled = true;                 // will re-enable when inputs are valid
 
   [toEl, durEl].forEach(el => el.classList.remove('error','ok'));
 validateInputs();
