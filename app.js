@@ -511,11 +511,15 @@ if (copyBtn) copyBtn.disabled = false;
 
 updateFdpNotice(ld, fdpEnd);
   
-// Scroll the timeline section to the top of the viewport
+// Scroll the Timeline section under the sticky header (no change to Reset behavior)
 setTimeout(() => {
-  const header = document.querySelector('.section-bar') || out;
-  if (!header) return;
-  const y = header.getBoundingClientRect().top + window.pageYOffset - 8; // small padding
+  const header = document.querySelector('header');
+  const target = document.querySelector('.section-bar') || document.getElementById('timeline');
+  if (!target) return;
+
+  const headerH = (header?.offsetHeight || 0);
+  const y = target.getBoundingClientRect().top + window.pageYOffset - headerH - 8;
+
   window.scrollTo({ top: y, behavior: 'smooth' });
 }, 0);
 
