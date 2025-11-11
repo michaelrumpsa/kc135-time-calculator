@@ -288,22 +288,19 @@ input.ok {
   gap: 6px;
 }
 
+/* Match dropdown font size to T/O and Duration inputs */
 .row-4.tight-grid select {
-  font-size: 0.9rem;        /* slightly smaller for phones */
-  padding: 6px 4px;         /* tighter vertical padding */
+  font-size: 0.95rem;   /* identical to input fields like T/O */
+  padding: 8px 6px;     /* visually balanced vertical spacing */
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu;
 }
 
 .row-4.tight-grid label {
-  font-size: 0.75rem;       /* fits above each dropdown cleanly */
-  color: #cbd5e1;           /* consistent with other labels */
-}
-
-/* Optional: ensure no wrapping even on small screens */
-@media (max-width: 420px) {
-  .row-4.tight-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
-  }
+  font-size: 0.8rem;        /* same as 'Departure TZ' labels */
+  font-weight: 500;         /* adds slight boldness for clarity */
+  color: #cbd5e1;           /* consistent tone with the rest */
+  letter-spacing: 0.2px;
+  margin-bottom: 4px;       /* uniform spacing above selects */
 }
 
   </style>
