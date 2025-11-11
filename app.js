@@ -262,21 +262,37 @@ function fmtDayTag(dt, offsetHours){
   return `${day}${mon}`;
 }
 
-function lineDual(name, dt, localOffset, hint, tzLabel=null){
-  const l = document.createElement('div'); l.className='line';
+function fmtZuluDayTag(dt) {
+  const day = String(dt.getUTCDate()).padStart(2, '0');
+  const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const mon = MON[dt.getUTCMonth()];
+  return `${day}${mon}(Z)`;
+}
+
+function lineDual(name, dt, localOffset, hint, tzLabel = null) {
+  const l = document.createElement('div');
+  l.className = 'line';
   const left = document.createElement('div');
 
   // Build label with TZ and optional day tag for T/O and Land
-  const baseLabel = tzLabel ? `${name} <span class="hint">(${tzLabel})</span>` : name;
+  const baseLabel = tzLabel
+    ? `${name} <span class="hint">(${tzLabel})</span>`
+    : name;
+
+  // Use Zulu day tag only for T/O and Land
   const withDay = (name === 'T/O' || name === 'Land')
-    ? `${baseLabel} <span class="hint">${fmtDayTag(dt, localOffset)}</span>`
+    ? `${baseLabel} <span class="hint">${fmtZuluDayTag(dt)}</span>`
     : baseLabel;
 
   left.innerHTML = `<span class="name">${withDay}</span>${hint ? ` <span class="hint">(${hint})</span>` : ''}`;
 
-  const right = document.createElement('div'); right.className='time';
+  const right = document.createElement('div');
+  right.className = 'time';
   right.textContent = `${fmtLocalWithOffset(dt, localOffset)}L / ${fmtZ(dt)}`;
-  l.appendChild(left); l.appendChild(right); out.appendChild(l);
+
+  l.appendChild(left);
+  l.appendChild(right);
+  out.appendChild(l);
 }
 
 function line(name, dt, off, hint){ lineDual(name, dt, off, hint); }
@@ -510,10 +526,10 @@ if (ld.getTime() >= fdpEnd.getTime()) {
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
   
-  // Build compact text for Copy (XXXXL/XXXXZ)
+// Build compact text for Copy (XXXXL/XXXXZ)
 const pair = (label, dt, off) => {
-  // Add only the day tag for T/O and Land, no (UTC±x)
-  const tag = (label === 'T/O' || label === 'Land') ? ` ${fmtDayTag(dt, off)}` : '';
+  // Only show Zulu day tag for T/O and Land, skip UTC offset clutter
+  const tag = (label === 'T/O' || label === 'Land') ? ` ${fmtZuluDayTag(dt)}` : '';
   return `${label}${tag}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
 };
 
