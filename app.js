@@ -266,7 +266,7 @@ function fmtZuluDayTag(dt) {
   const day = String(dt.getUTCDate()).padStart(2, '0');
   const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   const mon = MON[dt.getUTCMonth()];
-  return `${day}${mon}(Z)`;
+  return `${day}${mon} (Z)`;  // added space before (Z)
 }
 
 function lineDual(name, dt, localOffset, hint, tzLabel = null) {
