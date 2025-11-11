@@ -281,6 +281,31 @@ input.ok {
   -webkit-text-fill-color: #e5e7eb !important;
 }
 
+    /* 4-column tight layout that still fits on phones */
+.row-4.tight-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.row-4.tight-grid select {
+  font-size: 0.9rem;        /* slightly smaller for phones */
+  padding: 6px 4px;         /* tighter vertical padding */
+}
+
+.row-4.tight-grid label {
+  font-size: 0.75rem;       /* fits above each dropdown cleanly */
+  color: #cbd5e1;           /* consistent with other labels */
+}
+
+/* Optional: ensure no wrapping even on small screens */
+@media (max-width: 420px) {
+  .row-4.tight-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+}
+
   </style>
 
 </head>
@@ -347,25 +372,26 @@ input.ok {
       </div>
 
       <div class="section-title">Offsets prior to T/O</div>
-      <div class="row-3">
-        <div>
-          <label for="off-show">Show</label>
-          <select id="off-show"></select>
-        </div>
-        <div>
-          <label for="off-brief">Brief</label>
-          <select id="off-brief"></select>
-        </div>
-        <div>
-          <label for="off-step">Step</label>
-          <select id="off-step"></select>
-        </div>
-      </div>
-      <div class="row" style="margin-top:6px;">
-        <div>
-          <label for="off-eng">Eng Start</label>
-          <select id="off-eng"></select>
-        </div>
+
+<div class="row-4 tight-grid" style="margin-top:6px;">
+  <div>
+    <label for="off-show">Show</label>
+    <select id="off-show"></select>
+  </div>
+  <div>
+    <label for="off-brief">Brief</label>
+    <select id="off-brief"></select>
+  </div>
+  <div>
+    <label for="off-step">Step</label>
+    <select id="off-step"></select>
+  </div>
+  <div>
+    <label for="off-eng">Eng St</label>
+    <select id="off-eng"></select>
+  </div>
+</div>
+
         <div></div>
       </div>
     </div>
