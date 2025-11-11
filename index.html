@@ -288,23 +288,28 @@ input.ok {
   gap: 6px;
 }
 
-/* Match dropdown font size to T/O and Duration inputs */
-.row-4.tight-grid select {
-  font-size: 0.95rem;   /* identical to input fields like T/O */
-  padding: 8px 6px;     /* visually balanced vertical spacing */
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu;
+/* Offsets grid: make labels/selects match Departure/Arrival TZ */
+.row-4.tight-grid select{
+  font-size: 0.95rem;                 /* same as global input/select */
+  padding: 10px;                      /* same feel as others */
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: #0b1220;
+  color: #e5e7eb;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
+  line-height: 1.2;
 }
 
-/* === Offsets inherit global label styling === */
-.row-4.tight-grid label {
-  all: unset;
+/* Match the standard <label> style used elsewhere */
+.row-4.tight-grid label{
   display: block;
   color: #cbd5e1;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.2px;
+  font-size: 0.8rem;                  /* same as global label */
   margin-bottom: 4px;
+  font-weight: 400;                   /* remove the heavier look */
+  letter-spacing: 0;                  /* keep it consistent */
   line-height: 1.2;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
 }
 
   </style>
