@@ -512,7 +512,8 @@ if (ld.getTime() >= fdpEnd.getTime()) {
   
   // Build compact text for Copy (XXXXL/XXXXZ)
 const pair = (label, dt, off) => {
-  const tag = (label === 'T/O' || label === 'Land') ? ` (${tzLabelFromOffset(off)}) ${fmtDayTag(dt, off)}` : '';
+  // Add only the day tag for T/O and Land, no (UTC±x)
+  const tag = (label === 'T/O' || label === 'Land') ? ` ${fmtDayTag(dt, off)}` : '';
   return `${label}${tag}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
 };
 
