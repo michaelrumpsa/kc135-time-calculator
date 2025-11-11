@@ -511,7 +511,10 @@ if (ld.getTime() >= fdpEnd.getTime()) {
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
   
   // Build compact text for Copy (XXXXL/XXXXZ)
-const pair = (label, dt, off) => `${label}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
+const pair = (label, dt, off) => {
+  const tag = (label === 'T/O' || label === 'Land') ? ` (${tzLabelFromOffset(off)}) ${fmtDayTag(dt, off)}` : '';
+  return `${label}${tag}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
+};
 
 const durHHMM = `${String(Math.floor(dur/60)).padStart(2,'0')}${String(dur%60).padStart(2,'0')}`;
 
