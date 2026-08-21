@@ -745,6 +745,49 @@ if (copyBtn) {
   });
 }
 
+async function copyText(text) {
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.top = '-1000px';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  const copied = document.execCommand('copy');
+  ta.remove();
+  if (!copied) throw new Error('Copy failed');
+}
+
+function showCopiedLinkNotice() {
+  document.querySelector('.copy-link-notice')?.remove();
+  const notice = document.createElement('div');
+  notice.className = 'copy-link-notice';
+  notice.setAttribute('role', 'status');
+  notice.setAttribute('aria-live', 'polite');
+  notice.textContent = 'Link copied — share it or paste it into Chrome.';
+  document.body.appendChild(notice);
+  window.setTimeout(() => notice.remove(), 3000);
+}
+
+async function copyShareLink(event) {
+  event.preventDefault();
+  try {
+    await copyText('https://simbaops.com');
+    showCopiedLinkNotice();
+  } catch {
+    alert('Unable to copy automatically. The address is simbaops.com.');
+  }
+}
+
+const siteLink = $('siteLink');
+if (siteLink) siteLink.addEventListener('click', copyShareLink);
+
 function buildOffsetOptions(select, def){
   for(let m=0; m<=300; m+=5){
     const h=Math.floor(m/60), mm=m%60;

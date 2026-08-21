@@ -28,6 +28,12 @@
     header { padding:4px 12px; background:#0f172a; position:sticky; top:0; z-index:2; border-bottom:1px solid #111827; }
     .head { max-width:520px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }
     h1 { font-size:1rem; margin:0; letter-spacing:0.3px; }
+    .title-stack{display:flex;flex-direction:column;gap:1px;min-width:0}
+    .site-link{color:#facc15;text-decoration:none;font-size:0.76rem;font-weight:760;line-height:1;letter-spacing:0.02em;white-space:nowrap}
+    .site-link:visited{color:#facc15}
+    .site-link:hover,.site-link:focus-visible{text-decoration:underline}
+    .site-link:focus-visible{outline:2px solid #facc15;outline-offset:3px;border-radius:4px}
+    .copy-link-notice{position:fixed;z-index:5000;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));width:max-content;max-width:calc(100vw - 28px);padding:10px 14px;transform:translateX(-50%);color:var(--text);background:#121d2e;border:1px solid #facc15;border-radius:9px;box-shadow:0 12px 30px rgba(0,0,0,.45);font-size:.85rem;font-weight:650;text-align:center}
     .badge { display:flex; align-items:center; gap:8px; background:#0b1220; border:1px solid #1f2937; padding:6px 10px; border-radius:999px; }
     .badge img { width:28px; height:28px; border-radius:50%; object-fit:cover; }
     .badge .txt { font-size:0.75rem; color:#cbd5e1; white-space:nowrap; }
@@ -426,12 +432,15 @@ input.ok {
 <body>
   <header>
     <div class="head">
-      <h1>KC135 Time Calc</h1>
+      <div class="title-stack">
+        <h1>KC135 Time Calc</h1>
+        <a id="siteLink" class="site-link" href="https://simbaops.com/" target="_blank" rel="noopener">simbaops.com</a>
+      </div>
       <div class="badge">
        <a href="https://www.linkedin.com/in/james-m-rumpsa/" target="_blank" title="Visit my LinkedIn" style="display:inline-block;">
     <img src="assets/simba.jpg?v=1.10" alt="SIMBA" onerror="this.style.display='none'" style="cursor:pointer;">
   </a>
-        <div class="txt">CAO 14JUN26 <span class="dot">•</span> SIMBA</div>
+        <div class="txt">CAO 21AUG26 <span class="dot">•</span> SIMBA</div>
       </div>
     </div>
   </header>
@@ -717,7 +726,7 @@ input.ok {
   </div>
 </div>
 
-  <script src="app.js?v=1.16"></script>
+  <script src="app.js?v=1.17"></script>
   
 </body>
 </html>
