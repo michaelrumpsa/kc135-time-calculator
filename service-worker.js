@@ -1,4 +1,4 @@
-const CACHE_NAME = "kc135-pwa-v1.31"; // bump version to refresh cache
+const CACHE_NAME = "kc135-pwa-v1.33"; // bump version to refresh cache
 const ASSETS = [
   "./",
   "./app.js?v=1.17",
@@ -14,15 +14,7 @@ const ASSETS = [
 
 self.addEventListener("install", e => {
   e.waitUntil(
-    caches.keys()
-      .then(keys => {
-        const hasUpdateButtonVersion = keys.some(key => /^kc135-pwa-v1\.(1[6-9]|[2-9]\d)/.test(key));
-        return caches.open(CACHE_NAME)
-          .then(cache => cache.addAll(ASSETS))
-          .then(() => {
-            if (!hasUpdateButtonVersion) return self.skipWaiting();
-          });
-      })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
 });
 

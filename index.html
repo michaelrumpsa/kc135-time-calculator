@@ -440,7 +440,7 @@ input.ok {
        <a href="https://www.linkedin.com/in/james-m-rumpsa/" target="_blank" title="Visit my LinkedIn" style="display:inline-block;">
     <img src="assets/simba.jpg?v=1.10" alt="SIMBA" onerror="this.style.display='none'" style="cursor:pointer;">
   </a>
-        <div class="txt">CAO 21AUG26 <span class="dot">•</span> SIMBA</div>
+        <div class="txt">CAO 21AUG26</div>
       </div>
     </div>
   </header>
@@ -567,18 +567,26 @@ input.ok {
           window.location.reload();
         });
 
-        navigator.serviceWorker.register('./service-worker.js').then(reg => {
-          if (reg.waiting) showUpdateButton(reg.waiting);
+        function watchServiceWorker(worker) {
+          if (!worker) return;
+          const reconcileWorkerState = () => {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateButton(worker);
+            }
+          };
+          reconcileWorkerState();
+          worker.addEventListener('statechange', reconcileWorkerState);
+        }
 
-          reg.addEventListener('updatefound', () => {
-            const newWorker = reg.installing;
-            if (!newWorker) return;
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                showUpdateButton(newWorker);
-              }
-            });
-          });
+        navigator.serviceWorker.register('./service-worker.js', { updateViaCache: 'none' }).then(reg => {
+          if (reg.waiting) showUpdateButton(reg.waiting);
+          watchServiceWorker(reg.installing);
+
+          reg.addEventListener('updatefound', () => watchServiceWorker(reg.installing));
+          reg.update().then(() => {
+            if (reg.waiting) showUpdateButton(reg.waiting);
+            watchServiceWorker(reg.installing);
+          }).catch(() => {});
 
           updateBtn?.addEventListener('click', async () => {
             if (!waitingWorker) return;
